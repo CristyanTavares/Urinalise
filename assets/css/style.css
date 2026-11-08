@@ -762,3 +762,34 @@ html, body {
   .testimonials-fade-left, .testimonials-fade-right { width: 32px; }
 }
 
+/* Single Offer Card & Bonus Free Pill */
+.ecografia_planGrid__hvvtA--single {
+  grid-template-columns: minmax(0, 720px) !important;
+  justify-content: center;
+  margin-inline: auto;
+}
+.bonus-free-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 197, 220, 0.16);
+  border: 1px solid rgba(0, 197, 220, 0.48);
+  color: #69e3ed;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+.price-anchor-strike {
+  display: block;
+  font-size: 14px;
+  color: #9ec0d2;
+  margin-bottom: 4px;
+}
+.price-anchor-strike s {
+  color: #ff8585;
+  font-weight: 700;
+}

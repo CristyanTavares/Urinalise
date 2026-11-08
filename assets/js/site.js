@@ -5,7 +5,7 @@
   if (!sampleDataEl) return;
 
   const allSamples = JSON.parse(sampleDataEl.textContent);
-  const samples = allSamples.slice(0, 30);
+  const samples = allSamples.slice(0, 20);
   const narrow = matchMedia('(max-width:640px)');
   const step = () => narrow.matches ? 1 : 2;
   const imageCache = new Map();
@@ -99,7 +99,7 @@
       bookIndex = nextIndex;
       const bookCount = $('book-count');
       if (bookCount) {
-        bookCount.textContent = (bookIndex + 1) + (step() === 2 ? '–' + (bookIndex + 2) : '') + ' / 30';
+        bookCount.textContent = (bookIndex + 1) + (step() === 2 ? '–' + (bookIndex + 2) : '') + ' / 20';
       }
       if (bookLabel) {
         bookLabel.textContent = samples[bookIndex].book + ' · Página ' + samples[bookIndex].page;
@@ -239,12 +239,14 @@
   function openSample(id) {
     const index = allSamples.findIndex(s => s.id === id);
     if (index < 0) return;
-    if (index < 30) {
+    if (index < 20) {
       modalSamples = samples;
       renderSample(index);
-    } else if (index < 40) {
-      modalSamples = allSamples.slice(30, 40);
-      renderSample(index - 30);
+    } else if (allSamples[index].id.startsWith('bonus')) {
+      const bonusList = allSamples.filter(s => s.id.startsWith('bonus'));
+      const bIdx = bonusList.findIndex(s => s.id === id);
+      modalSamples = bonusList;
+      renderSample(bIdx >= 0 ? bIdx : 0);
     } else {
       modalSamples = allSamples;
       renderSample(index);
@@ -684,4 +686,30 @@
       track.style.animationPlayState = 'running';
     });
   }
+
+  /* ========================================================================
+     CHECKOUT LINK UTM FORWARDING & PIXEL TRACKING
+     ======================================================================== */
+  const checkoutLinks = document.querySelectorAll('a[href*="pay.wiapy.com"]');
+  if (checkoutLinks.length > 0) {
+    const searchParams = window.location.search;
+    checkoutLinks.forEach(link => {
+      if (searchParams && searchParams.length > 1) {
+        try {
+          const url = new URL(link.href);
+          const incoming = new URLSearchParams(searchParams);
+          incoming.forEach((val, key) => {
+            if (!url.searchParams.has(key)) url.searchParams.set(key, val);
+          });
+          link.href = url.toString();
+        } catch (_) {}
+      }
+      link.addEventListener('click', () => {
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', 'InitiateCheckout');
+        }
+      });
+    });
+  }
+
 })();
